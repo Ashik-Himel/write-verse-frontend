@@ -94,7 +94,7 @@ export default function SidebarComp({ children }: { children: ReactNode }) {
           <div className="flex h-14 items-center border-b px-4">
             <SidebarTrigger />
             <div className="ml-4 w-full flex justify-between items-center">
-              <span className="text-lg font-semibold">Admin Dashboard</span>
+              <span className="text-lg font-semibold">User Dashboard</span>
               <LogoutToggle
                 triggerElement={<Button size="sm">Logout</Button>}
               />
