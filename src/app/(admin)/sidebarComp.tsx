@@ -14,11 +14,9 @@ import {
 import {
   Bell,
   Edit,
-  FileText,
   Flag,
   Home,
   LogOut,
-  MessageSquare,
   PenSquare,
   User,
   Users,
@@ -50,16 +48,6 @@ export default function SidebarComp({ children }: { children: ReactNode }) {
       title: "Publish Announcement",
       href: "/admin/publish-announcement",
       icon: PenSquare,
-    },
-    {
-      title: "Posts",
-      href: "/admin/posts",
-      icon: FileText,
-    },
-    {
-      title: "Comments",
-      href: "/admin/comments",
-      icon: MessageSquare,
     },
     {
       title: "Reports",
