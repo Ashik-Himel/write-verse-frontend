@@ -1,5 +1,7 @@
 "use client";
 
+import LogoutToggle from "@/components/logoutToggle";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -91,7 +93,12 @@ export default function SidebarComp({ children }: { children: ReactNode }) {
         <div className="flex-1 overflow-auto">
           <div className="flex h-14 items-center border-b px-4">
             <SidebarTrigger />
-            <div className="ml-4 text-lg font-semibold">User Dashboard</div>
+            <div className="ml-4 w-full flex justify-between items-center">
+              <span className="text-lg font-semibold">Admin Dashboard</span>
+              <LogoutToggle
+                triggerElement={<Button size="sm">Logout</Button>}
+              />
+            </div>
           </div>
           <div className="p-6">{children}</div>
         </div>
