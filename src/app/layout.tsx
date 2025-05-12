@@ -1,3 +1,4 @@
+import FetchUserState from "@/components/fetchUserState";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { Toaster } from "@/components/ui/sonner";
@@ -12,7 +13,6 @@ export const metadata: Metadata = {
   title: "WriteVerse - Interactive Forum",
   description:
     "A place to share ideas, discuss topics, and connect with others",
-  generator: "v0.dev",
 };
 
 export default function RootLayout({
@@ -28,6 +28,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
+        <FetchUserState />
         <Toaster />
       </body>
     </html>

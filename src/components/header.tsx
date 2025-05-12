@@ -7,6 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useUserStore } from "@/lib/userStore";
 import { cn } from "@/lib/utils";
 import { Edit, Menu } from "lucide-react";
 import Link from "next/link";
@@ -20,6 +21,8 @@ const mainNavItems = [
 
 export default function Header() {
   const pathname = usePathname();
+  const user = useUserStore((state) => state.user);
+  const userLoaded = useUserStore((state) => state.userLoaded);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -113,12 +116,34 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" asChild>
-              <Link href="/login">Sign in</Link>
-            </Button>
-            <Button size="sm" asChild>
-              <Link href="/join">Join</Link>
-            </Button>
+            {userLoaded ? (
+              user ? (
+                <Button size="sm" asChild>
+                  <Link
+                    href={
+                      user?.role === "admin"
+                        ? "/admin/dashboard"
+                        : "/user/dashboard"
+                    }
+                  >
+                    Dashboard
+                  </Link>
+                </Button>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/login">Sign in</Link>
+                  </Button>
+                  <Button size="sm" asChild>
+                    <Link href="/join">Join</Link>
+                  </Button>
+                </>
+              )
+            ) : (
+              <Button variant="outline" size="sm">
+                Loading
+              </Button>
+            )}
           </div>
         </div>
       </div>

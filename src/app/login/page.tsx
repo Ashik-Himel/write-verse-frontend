@@ -22,40 +22,92 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUserStore } from "@/lib/userStore";
+import { serverDomain } from "@/lib/variables";
+import Cookies from "js-cookie";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
   const [isLoading, setIsLoading] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [isResetLoading, setIsResetLoading] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    const form = e.currentTarget;
+    const email = (
+      form.elements.namedItem("email") as HTMLInputElement
+    ).value.trim();
+    const password = (form.elements.namedItem("password") as HTMLInputElement)
+      .value;
+
+    const res = await fetch(`${serverDomain}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    const result = await res.json();
+
+    if (result.ok) {
+      Cookies.set("token", result?.token, {
+        secure: true,
+        sameSite: "Strict",
+        expires: 7,
+      });
+      setUser({ available: true, role: result?.userRole });
+      toast("Logged in successfully.");
+      if (result?.userRole === "admin") {
+        router.replace("/admin/dashboard");
+      } else if (result?.userRole === "user") {
+        router.replace("/user/dashboard");
+      }
+    } else if (result.message === "User not found") {
       setIsLoading(false);
-      window.location.href = "/dashboard";
-    }, 1500);
+      toast("User not found with this email address.");
+    } else if (result.message === "Invalid credentials") {
+      setIsLoading(false);
+      toast("Your credentials are invalid.");
+    } else {
+      setIsLoading(false);
+      toast("An error occurred. Please try again.");
+    }
   };
 
-  const handleResetPassword = (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsResetLoading(true);
 
-    // Simulate API call to send reset link
-    setTimeout(() => {
+    const res = await fetch(`${serverDomain}/api/auth/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: resetEmail }),
+    });
+    const result = await res.json();
+
+    if (result.ok) {
       setIsResetLoading(false);
       setResetDialogOpen(false);
       toast("Reset link sent", {
         description: `We've sent a password reset link to ${resetEmail}`,
       });
       setResetEmail("");
-    }, 1500);
+    } else {
+      setIsResetLoading(false);
+      toast(result.message);
+    }
   };
 
   return (
@@ -70,7 +122,7 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
