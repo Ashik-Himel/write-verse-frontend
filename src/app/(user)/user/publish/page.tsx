@@ -34,6 +34,7 @@ import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const postFormSchema = z.object({
@@ -80,8 +81,7 @@ export default function PublishPostPage() {
 
     // Simulate API call
     setTimeout(() => {
-      toast({
-        title: "Post published",
+      toast("Post published", {
         description: "Your post has been published successfully.",
       });
       setIsLoading(false);
