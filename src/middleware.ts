@@ -31,7 +31,10 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!result?.ok) {
-    if (pathname.startsWith("/user/") || pathname.startsWith("/admin/")) {
+    if (
+      pathname.startsWith("/user/dashboard/") ||
+      pathname.startsWith("/admin/dashboard/")
+    ) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   } else {
@@ -43,10 +46,16 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    if (result?.user?.role === "user" && pathname.startsWith("/admin")) {
+    if (
+      result?.user?.role === "user" &&
+      pathname.startsWith("/admin/dashboard/")
+    ) {
       return NextResponse.redirect(new URL("/user/dashboard", request.url));
     }
-    if (result?.user?.role === "admin" && pathname.startsWith("/user/")) {
+    if (
+      result?.user?.role === "admin" &&
+      pathname.startsWith("/user/dashboard/")
+    ) {
       return NextResponse.redirect(new URL("/admin/dashboard", request.url));
     }
   }
@@ -59,7 +68,7 @@ export const config = {
     "/login",
     "/join",
     "/reset-password",
-    "/user/:path*",
-    "/user/:path*",
+    "/user/dashboard/:path*",
+    "/admin/dashboard/:path*",
   ],
 };

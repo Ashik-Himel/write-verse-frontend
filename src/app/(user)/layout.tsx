@@ -1,33 +1,28 @@
 import FetchUserState from "@/components/fetchUserState";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 import { Toaster } from "@/components/ui/sonner";
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import { Inter } from "next/font/google";
-import type React from "react";
-import "./globals.css";
+import type { ReactNode } from "react";
+import "../globals.css";
+import SidebarComp from "./sidebarComp";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "WriteVerse - Interactive Forum",
+  title: "Dashboard - WriteVerse",
   description:
     "A place to share ideas, discuss topics, and connect with others",
 };
 
-export default function RootLayout({
+export default function UserDashboardLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: ReactNode;
+}) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <SidebarComp>{children}</SidebarComp>
         <FetchUserState />
         <Toaster />
       </body>
